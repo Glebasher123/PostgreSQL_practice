@@ -80,26 +80,10 @@ hobbies jsonb
 );
 
 INSERT INTO pilot_hobbies
-VALUES ( 'Ivan',
-'{ "sports": [ "футбол", "плавание" ],
-"home_lib": true, "trips": 3
-}'::jsonb
-),
-( 'Petr',
-'{ "sports": [ "теннис", "плавание" ],
-"home_lib": true, "trips": 2
-}'::jsonb
-),
-( 'Pavel',
-'{ "sports": [ "плавание" ],
-"home_lib": false, "trips": 4
-}'::jsonb
-),
-( 'Boris',
-'{ "sports": [ "футбол", "плавание", "теннис" ],
-"home_lib": true, "trips": 0
-}'::jsonb
-);
+VALUES ( 'Ivan','{ "sports": [ "футбол", "плавание" ],"home_lib": true, "trips": 3}'::jsonb),
+( 'Petr','{ "sports": [ "теннис", "плавание" ],"home_lib": true, "trips": 2}'::jsonb),
+( 'Pavel','{ "sports": [ "плавание" ],"home_lib": false, "trips": 4}'::jsonb),
+( 'Boris','{ "sports": [ "футбол", "плавание", "теннис" ],"home_lib": true, "trips": 0}'::jsonb);
 
 SELECT * FROM pilot_hobbies
 WHERE hobbies @> '{ "sports": ["плавание"] }'::jsonb;
@@ -209,5 +193,118 @@ INSERT INTO test_serial2 ( name ) VALUES ( 'Луговая' );
 
 DELETE FROM test_serial2 WHERE id = 4;
 
+SELECT current_time;
 
+SELECT current_timestamp::timestamp( 2 );
 
+SHOW datestyle;
+
+SET datestyle TO 'MDY';
+SET datestyle TO DEFAULT;
+
+SELECT '05-18-2016'::date;
+SELECT '18-05-2016'::date;
+
+SET datestyle TO 'Postgres, DMY';
+
+SHOW datestyle
+
+SELECT to_char( current_timestamp, 'mi:ss' );
+
+SELECT to_char( current_timestamp, 'dd' );
+
+SELECT to_char( current_timestamp, 'dd-mm-yyyy' );
+
+SELECT to_char(CURRENT_date, text)	
+
+SELECT 'Feb 25, 2015'::date;
+
+SELECT '21:15:16'::time;
+SELECT ( '2016-09-16'::date - '2016-09-01'::date );
+SELECT ( '20:34:35'::time - '19:44:45'::time );
+
+SELECT ( current_timestamp - '2016-01-01'::timestamp )
+AS new_date;
+
+SELECT ( current_timestamp + '1 mon'::interval ) AS new_date;
+SELECT ( '2016-01-31'::date + '1 mon'::interval ) AS new_date;
+SELECT ( '2016-02-29'::date + '1 mon'::interval ) AS new_date;
+
+SHOW intervalstyle;
+
+SELECT ( '2016-09-16'::date - '2015-09-01'::date );
+
+SELECT ( '2016-09-16'::timestamp - '2015-09-01'::timestamp );
+
+SELECT ( '20:34:35'::time - '00:01:00' );
+
+SELECT ( '2016-09-16'::date - 1 );
+
+SELECT ( date_trunc( 'week', interval '1999-11-27 12:34:56.987654' ) );
+
+SELECT extract('century' from interval '2101-11-27 12:34:56.123459');
+
+SELECT * FROM databases WHERE NOT is_open_source;
+SELECT * FROM databases WHERE is_open_source <> 'yes';
+SELECT * FROM databases WHERE is_open_source <> 't';
+SELECT * FROM databases WHERE is_open_source <> '1';
+SELECT * FROM databases WHERE is_open_source <> 1;
+
+CREATE TABLE test_bool
+( a boolean,
+b text
+);
+
+INSERT INTO test_bool VALUES ( TRUE, 'yes' );
+INSERT INTO test_bool VALUES ( yes, 'yes' ); --
+INSERT INTO test_bool VALUES ( 'yes', true );
+INSERT INTO test_bool VALUES ( 'yes', TRUE );
+INSERT INTO test_bool VALUES ( '1', 'true' );
+INSERT INTO test_bool VALUES ( 1, 'true' ); --
+INSERT INTO test_bool VALUES ( 't', 'true' );
+INSERT INTO test_bool VALUES ( 't', truth ); --*
+INSERT INTO test_bool VALUES ( true, true ); --
+INSERT INTO test_bool VALUES ( 1::boolean, 'true' );
+INSERT INTO test_bool VALUES ( 111::boolean, 'true' );
+
+CREATE TABLE birthdays
+( 
+	person text NOT NULL,
+	birthday date NOT NULL 
+);
+
+SELECT * FROM birthdays
+INSERT INTO birthdays VALUES ( 'Ken Thompson', '1955-03-23' );
+INSERT INTO birthdays VALUES ( 'Ben Johnson', '1971-03-19' );
+INSERT INTO birthdays VALUES ( 'Andy Gibson', '1987-08-12' );
+
+SELECT * FROM birthdays
+WHERE extract( 'mon' from birthday ) = 3;
+
+SELECT *, birthday + '40 years'::interval
+FROM birthdays
+WHERE birthday + '40 years'::interval < current_timestamp;
+
+SELECT *, ( age(current_date) + age(birthday))
+FROM birthdays; --31
+
+SELECT array_cat( ARRAY[ 1, 2, 3 ], ARRAY[ 3, 5 ] );
+
+SELECT array_remove( ARRAY[ 1, 2, 3 ], 3 );
+
+CREATE TABLE pilots
+( 
+	pilot_name text,
+	schedule integer[],
+	meal text[]
+);
+
+INSERT INTO pilots
+VALUES ( 'Ivan', '{ 1, 3, 5, 6, 7 }'::integer[],'{ "сосиска", "макароны", "кофе" }'::text[]),
+( 'Petr', '{ 1, 2, 5, 7 }'::integer [],'{ "котлета", "каша", "кофе" }'::text[]),
+( 'Pavel', '{ 2, 5 }'::integer[],'{ "сосиска", "каша", "кофе" }'::text[]),
+( 'Boris', '{ 3, 5, 6 }'::integer[],'{ "котлета", "каша", "чай" }'::text[]);
+
+SELECT * FROM pilots
+
+SELECT * FROM pilots WHERE meal[ 1 ] = 'сосиска';
