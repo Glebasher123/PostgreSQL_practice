@@ -57,7 +57,7 @@ WHERE r.num_of_day = dw.num_of_day
 GROUP BY r.num_of_day, dw.name_of_day
 ORDER BY r.num_of_day;
 
--- 12  ???
+-- 12
 
 SELECT f.departure_city, f.arrival_city,
 max( tf.amount ), min( tf.amount )
