@@ -35,3 +35,30 @@ FROM (SELECT model, price
  ) AS a JOIN 
  Product p ON a.model = p.model
 WHERE p.maker = 'B'; -- 7(2)
+
+select distinct maker from Product
+where type = 'PC' AND maker not in (select maker from Product WHERE type ='Laptop') -- 8(2) ok
+
+select distinct maker from product
+join pc on product.model = pc.model
+where speed >= 450 -- 9(1) ok
+
+select model, price from printer
+where price = (select max(price) from printer) -- 10(1) ok
+
+select avg(speed) as avgspeed from pc -- 11(1) ok
+
+select avg(speed) as avgspeed from laptop
+where price > 1000 --12(1) ok
+
+select avg(speed) from product
+join pc on product.model = pc.model
+where maker = 'A' --13(1) ok
+
+select classes.class, name, country from classes
+join ships on classes.class = ships.class
+where numGuns >= 10 -- 14(1) ok
+
+select hd from pc
+group by hd
+having count(model) >= 2 -- 15(1) ok
